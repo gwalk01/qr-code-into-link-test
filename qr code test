@@ -1,0 +1,51 @@
+import sys
+import cv2
+import os
+
+def decode_qr_code(file_path):
+    """
+    Decodes a QR code from an image file.
+
+    Args:
+        file_path (str): Path to the image file.
+
+    Returns:
+        str: Decoded data from the QR code, or an error message.
+    """
+    if not os.path.exists(file_path):
+        return "Error: File not found."
+
+    # Read the image file
+    image = cv2.imread(file_path)
+    if image is None:
+        return "Error: Unable to load image. Check the file path or format."
+
+    # Initialize the QRCode detector
+    detector = cv2.QRCodeDetector()
+
+    # Detect and decode the QR code
+    data, vertices_array, binary_qrcode = detector.detectAndDecode(image)
+
+    # If QR code data is detected
+    if vertices_array is not None and data:
+        return data
+    else:
+        return "Error: No QR code found or QR code could not be decoded."
+
+def main():
+    # Check for the file path argument
+    if len(sys.argv) != 2:
+        print("Usage: python qr_code_to_link.py <file_path>")
+        sys.exit(1)
+
+    # Get the file path from command-line arguments
+    file_path = sys.argv[1]
+
+    # Decode the QR code
+    result = decode_qr_code(file_path)
+
+    # Display the result
+    print(result)
+
+if __name__ == "__main__":
+    main()
